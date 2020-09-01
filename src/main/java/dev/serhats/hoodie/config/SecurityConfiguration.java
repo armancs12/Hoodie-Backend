@@ -25,12 +25,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final JWTAuthFilter jwtAuthFilter;
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
@@ -40,16 +34,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-    }
-
-    @Autowired
-    void configureAuthenticationManager(AuthenticationManagerBuilder builder) throws Exception {
-        builder.userDetailsService(userDetailsService)
-                .passwordEncoder(getPasswordEncoder());
-    }
-
-    @Bean
-    PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(10);
     }
 }
