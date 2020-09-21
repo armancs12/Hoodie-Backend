@@ -1,4 +1,4 @@
-package dev.serhats.hoodie.service;
+package dev.serhats.hoodie.service.impl;
 
 import dev.serhats.hoodie.domain.Role;
 import dev.serhats.hoodie.domain.User;
@@ -21,11 +21,11 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class DefaultUserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JWTService jwtService;
+    private final DefaultJWTService defaultJwtService;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -54,7 +54,7 @@ public class UserService implements UserDetailsService {
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtService.createToken(username, rememberMe);
+        return defaultJwtService.createToken(username, rememberMe);
     }
 
 }

@@ -1,4 +1,4 @@
-package dev.serhats.hoodie.service;
+package dev.serhats.hoodie.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @PropertySource("classpath:jwt.properties")
-public class JWTService {
+public class DefaultJWTService {
 
     @Value("${jwt.secret}")
     private static String SECRET;
