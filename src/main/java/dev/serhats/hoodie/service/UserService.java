@@ -11,7 +11,7 @@ public interface UserService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-    void registerUser(UserRegister userRegister);
+    UserView registerUser(UserRegister userRegister);
 
     String getAccessToken(UserLogin userLogin);
 
