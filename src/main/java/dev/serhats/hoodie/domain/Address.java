@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Data
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class Address extends BaseEntity {
     @Column(nullable = false)

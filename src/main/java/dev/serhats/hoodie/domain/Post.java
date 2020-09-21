@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 @Data
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class Post extends BaseEntity {
     @Lob

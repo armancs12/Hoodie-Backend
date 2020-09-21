@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class Comment extends BaseEntity {
     @Lob
