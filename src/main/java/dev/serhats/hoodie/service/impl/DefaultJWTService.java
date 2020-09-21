@@ -33,6 +33,10 @@ public class DefaultJWTService {
 
     private static JWTVerifier VERIFIER;
 
+    private static Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(SECRET.getBytes());
+    }
+
     public String createToken(String subject, boolean rememberMe) {
         return JWT.create()
                 .withSubject(subject)
@@ -56,7 +60,7 @@ public class DefaultJWTService {
         int[] times;
         if (rememberMe) {
             times = Arrays.stream(REMEMBER_EXPIRATION_TIME.split(":")).mapToInt(Integer::parseInt).toArray();
-        }else {
+        } else {
             times = Arrays.stream(EXPIRATION_TIME.split(":")).mapToInt(Integer::parseInt).toArray();
         }
         return Time.valueOf(LocalTime.now()
@@ -65,11 +69,6 @@ public class DefaultJWTService {
                 .plusMinutes(times[2])
                 .plusSeconds(times[3]));
     }
-
-    private static Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(SECRET.getBytes());
-    }
-
 
     public Optional<String> getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader(AUTH_HEADER);
