@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,8 +26,8 @@ public class Address extends BaseEntity {
     private String neighbourhood;
 
     @OneToMany(mappedBy = "currentAddress")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     @OneToMany(mappedBy = "address")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 }

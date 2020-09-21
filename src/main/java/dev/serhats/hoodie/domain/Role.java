@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
     public Role(String name) {
         this.name = name;

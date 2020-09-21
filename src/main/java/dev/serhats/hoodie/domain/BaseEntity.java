@@ -15,6 +15,6 @@ public abstract class BaseEntity {
     @Column(nullable = false, updatable = false)
     private Time createdTime;
 
-    @Column(nullable = false)
+    @Column
     private Time updatedTime;
 }

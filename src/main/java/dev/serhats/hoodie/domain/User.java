@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,15 +23,15 @@ public class User extends BaseEntity implements UserDetails {
 
     private String profilePictureUrl;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Role> roles;
-
     @ManyToOne
     @JoinColumn(name = "current_address_id", referencedColumnName = "id", nullable = false)
     private Address currentAddress;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Role> roles = new ArrayList<>();
+
     @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    private List<Post> posts = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String username;
