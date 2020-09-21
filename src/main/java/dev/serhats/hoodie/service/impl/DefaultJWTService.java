@@ -3,6 +3,8 @@ package dev.serhats.hoodie.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import dev.serhats.hoodie.service.JWTService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -16,25 +18,20 @@ import java.util.Optional;
 
 @Service
 @PropertySource("classpath:jwt.properties")
-public class DefaultJWTService {
-
-    @Value("${jwt.secret}")
-    private static String SECRET;
-
-    @Value("${jwt.expirationTime}")
-    private static String EXPIRATION_TIME;
-
-    @Value("${jwt.rememberExpirationTime}")
-    private static String REMEMBER_EXPIRATION_TIME;
-
-    @Value("${auth.header}")
-    private static String AUTH_HEADER;
-
+public class DefaultJWTService implements JWTService {
 
     private static JWTVerifier VERIFIER;
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.expirationTime}")
+    private String expirationTime;
+    @Value("${jwt.rememberExpirationTime}")
+    private String rememberExpirationTime;
+    @Value("${auth.header}")
+    private String authHeader;
 
-    private static Algorithm getAlgorithm() {
-        return Algorithm.HMAC256(SECRET.getBytes());
+    private Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(secret.getBytes());
     }
 
     public String createToken(String subject, boolean rememberMe) {
@@ -59,9 +56,9 @@ public class DefaultJWTService {
     private Date getExpirationTime(boolean rememberMe) {
         int[] times;
         if (rememberMe) {
-            times = Arrays.stream(REMEMBER_EXPIRATION_TIME.split(":")).mapToInt(Integer::parseInt).toArray();
+            times = Arrays.stream(rememberExpirationTime.split(":")).mapToInt(Integer::parseInt).toArray();
         } else {
-            times = Arrays.stream(EXPIRATION_TIME.split(":")).mapToInt(Integer::parseInt).toArray();
+            times = Arrays.stream(expirationTime.split(":")).mapToInt(Integer::parseInt).toArray();
         }
         return Time.valueOf(LocalTime.now()
                 .plusHours(times[0] * 24) // Days
@@ -71,10 +68,17 @@ public class DefaultJWTService {
     }
 
     public Optional<String> getTokenFromHeader(HttpServletRequest request) {
-        String token = request.getHeader(AUTH_HEADER);
+        String token = request.getHeader(authHeader);
         if (token != null && !token.isEmpty() && token.startsWith("Bearer ")) {
             return Optional.of(token.substring(7));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public String verifyTokenAndGetSubject(String token) {
+        //Throws exception if token is couldn't be verified
+        DecodedJWT decodedJWT = getVerifier().verify(token);
+        return decodedJWT.getSubject();
     }
 }

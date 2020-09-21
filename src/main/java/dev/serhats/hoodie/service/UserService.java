@@ -15,5 +15,5 @@ public interface UserService extends UserDetailsService {
 
     String getAccessToken(UserLogin userLogin);
 
-    UserView getUserById(int userId);
+    UserView getUserById(long userId);
 }

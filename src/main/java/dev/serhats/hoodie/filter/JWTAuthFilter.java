@@ -1,8 +1,7 @@
 package dev.serhats.hoodie.filter;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import dev.serhats.hoodie.service.impl.DefaultJWTService;
-import dev.serhats.hoodie.service.impl.DefaultUserService;
+import dev.serhats.hoodie.service.JWTService;
+import dev.serhats.hoodie.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,20 +17,18 @@ import java.io.IOException;
 @Filter
 @RequiredArgsConstructor
 public class JWTAuthFilter extends OncePerRequestFilter {
-    private final DefaultJWTService defaultJwtService;
-    private final DefaultUserService defaultUserService;
+    private final JWTService jwtService;
+    private final UserService userService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        defaultJwtService.getTokenFromHeader(httpServletRequest)
+        jwtService.getTokenFromHeader(httpServletRequest)
                 .ifPresent(token -> {
-                    //Throws exception if token is couldn't be verified
-                    DecodedJWT decodedJWT = defaultJwtService.getVerifier().verify(token);
-                    String subject = decodedJWT.getSubject();
-                    UserDetails userDetails = defaultUserService.loadUserByUsername(subject);
+                    String subject = jwtService.verifyTokenAndGetSubject(token);
+                    UserDetails userDetails = userService.loadUserByUsername(subject);
 
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
